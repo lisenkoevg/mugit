@@ -16,21 +16,25 @@ repos=(
 count=${#repos[@]}
 
 function main() {
+  changed=0
   for i in `seq 0 $((count - 1))`; do
-    processRepo "${repos[i]}"
+    processRepo "${repos[i]}" || (( changed++ ))
   done
+  return $changed
 }
 
 function processRepo() {
   pushd "$1" > /dev/null
   name=${1/$PROJECTS_DIR\//}
-  printf "==== %-35s ============================\n\n" "$name"
-  # git remote -v | grep push
-  git status -s
+  remote=$(git remote -v)
+  [ "${#remote}" == "0" ] && remote="==" || remote="R "
+  printf "==== %-35s %s========================= \n\n" "$name" "$remote"
+  status=$(git status -s)
+  printf "%s\n" "$status"
   popd > /dev/null
-  echo -e \\n
+  printf "\n"
+  [  ${#status} != 0 ] && return 1
 }
-
 printf "%60sTotal repos: %s\n\n" " " $count
 main | pr --columns=2 -w 140 -s" | " -o 2 -t -
-# read -p "Press Enter to exit..." 
+[ "${PIPESTATUS[0]}" != "0" ] && read -p "Press Enter to exit..." || sleep 1
