@@ -12,6 +12,7 @@ repos=(
   "$PROJECTS_DIR/pdf_bookmarks"
   "$PROJECTS_DIR/text_analys"
   "$PROJECTS_DIR/mugit"
+  "$PROJECTS_DIR/learn_languages"
 )
 count=${#repos[@]}
 
