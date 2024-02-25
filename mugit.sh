@@ -46,23 +46,24 @@ function processRepo() {
   [ "${#status}" == "0" ] || return 1
 }
 
-mainWrapper
-[ ! "$?" == "0" ] && {
-  while true
-  do
-    read -p "Press N to go to repo, 'r' for refresh or 'q/Enter' to exit: "
-    case $REPLY in
-      'r')
-        mainWrapper
-        ;;
-      'q' | '')
-        exit
-        ;;
-      *)
-        [ -n "${repos[$REPLY]}" ] && {
-          cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
-        }
-        ;;
-    esac
-  done
-} || sleep 1
+timeout=3600
+mainWrapper && timeout=2
+
+while true
+do
+  read -t $timeout -p "Press N to go to repo, 'r' for refresh or 'q/Enter' to exit (timeout=$timeout): "
+  case $REPLY in
+    'r')
+      timeout=3600
+      mainWrapper && timeout=2
+      ;;
+    'q' | '')
+      exit
+      ;;
+    *)
+      [ -n "${repos[$REPLY]}" ] && {
+        cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
+      }
+      ;;
+  esac
+done
