@@ -62,6 +62,7 @@ do
       ;;
     *)
       [ -n "${repos[$REPLY]}" ] && {
+        timeout=3600
         cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
       }
       ;;
