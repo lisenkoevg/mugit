@@ -57,7 +57,7 @@ do
       timeout=3600
       mainWrapper && timeout=2
       ;;
-    'q' | '')
+    'q' | '' | ' ')
       exit
       ;;
     *)
