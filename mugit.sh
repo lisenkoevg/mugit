@@ -16,26 +16,53 @@ repos=(
 )
 count=${#repos[@]}
 
+function mainWrapper() {
+  clear
+  printf "%60sTotal repos: %s\n\n" " " $count
+  main | pr --columns=2 -w 140 -s" | " -o 2 -t -
+  rc=${PIPESTATUS[0]}
+  echo "Changed: $rc"
+  return $rc
+}
+
 function main() {
   changed=0
   for i in `seq 0 $((count - 1))`; do
-    processRepo "${repos[i]}" || (( changed++ ))
+    processRepo $i || (( changed++ ))
   done
   return $changed
 }
 
 function processRepo() {
-  pushd "$1" > /dev/null
-  name=${1/$PROJECTS_DIR\//}
+  repo="${repos[$1]}"
+  pushd "$repo" > /dev/null
+  name=${repo/$PROJECTS_DIR\//}
   remote=$(git remote -v)
   [ "${#remote}" == "0" ] && remote="==" || remote="R "
-  printf "==== %-35s %s========================= \n\n" "$name" "$remote"
+  printf "%2s) ==== %-35s %s======================== \n\n" "$1" "$name" "$remote"
   status=$(git status -s)
   printf "%s\n" "$status"
   popd > /dev/null
-  printf "\n"
-  [  ${#status} != 0 ] && return 1
+  [ "${#status}" == "0" ] || return 1
 }
-printf "%60sTotal repos: %s\n\n" " " $count
-main | pr --columns=2 -w 140 -s" | " -o 2 -t -
-[ "${PIPESTATUS[0]}" != "0" ] && read -p "Press Enter to exit..." || sleep 1
+
+mainWrapper
+[ "$?" != "0" ] && {
+  while true
+  do
+    read -p "Press N to go to repo, 'r' for refresh or 'q/Enter' to exit: "
+    case $REPLY in
+      'r')
+        mainWrapper
+        ;;
+      'q' | '')
+        exit
+        ;;
+      *)
+        [ -n "${repos[$REPLY]}" ] && {
+          cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
+        }
+        ;;
+    esac
+  done
+} || sleep 1
