@@ -47,7 +47,7 @@ function processRepo() {
 }
 
 mainWrapper
-[ "$?" != "0" ] && {
+[ ! "$?" == "0" ] && {
   while true
   do
     read -p "Press N to go to repo, 'r' for refresh or 'q/Enter' to exit: "
