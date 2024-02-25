@@ -55,7 +55,7 @@ do
   case $REPLY in
     'r')
       timeout=3600
-      mainWrapper && timeout=2
+      mainWrapper && timeout=3
       ;;
     'q' | '' | ' ')
       exit
