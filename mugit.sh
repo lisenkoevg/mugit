@@ -39,9 +39,9 @@ function processRepo() {
   name=${repo/$PROJECTS_DIR\//}
   remote=$(git remote -v)
   [ "${#remote}" == "0" ] && remote="==" || remote="R "
-  printf "%2s) ==== %-35s %s======================== \n\n" "$1" "$name" "$remote"
+  printf "(%-2s ==== %-35s %s======================= \n" "$1" "$name" "$remote"
   status=$(git status -s)
-  printf "%s\n" "$status"
+  printf "%s\n\n" "$status"
   popd > /dev/null
   [ "${#status}" == "0" ] || return 1
 }
@@ -57,11 +57,11 @@ do
       timeout=3600
       mainWrapper && timeout=3
       ;;
-    'q' | '' | ' ')
+    'e' | 'q' | '' | ' ')
       exit
       ;;
     *)
-      [ -n "${repos[$REPLY]}" ] && {
+      [ -n "${repos[$REPLY]}" ] && $(echo "$REPLY" | grep -qP '^\d+$') && {
         timeout=3600
         cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
       }
