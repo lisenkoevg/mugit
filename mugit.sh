@@ -47,7 +47,7 @@ function processRepo() {
 }
 
 timeout=3600
-mainWrapper && timeout=2
+mainWrapper && timeout=3
 
 while true
 do
