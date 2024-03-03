@@ -13,6 +13,7 @@ repos=(
   "$PROJECTS_DIR/text_analys"
   "$PROJECTS_DIR/mugit"
   "$PROJECTS_DIR/learn_languages"
+  "$PROJECTS_DIR/organize_files_by_date"
 )
 count=${#repos[@]}
 
