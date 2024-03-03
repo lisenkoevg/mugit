@@ -2,6 +2,9 @@
 
 PROJECTS_DIR='d:/YandexDisk/Projects'
 
+tmpScript=$(dirname "$0")/tmp.sh
+trap "rm -f \"$tmpScript\"" EXIT
+
 repos=(
   'c:\bin'
   'c:\cygwin64\home\Evgen'
@@ -64,7 +67,9 @@ do
     *)
       [ -n "${repos[$REPLY]}" ] && $(echo "$REPLY" | grep -qP '^\d+$') && {
         timeout=3600
-        cmd /c start /max /d "$(cygpath -w ${repos[$REPLY]})" bash -i
+        echo "git diff; rm \"$tmpScript\"; $SHELL" > "$tmpScript"
+        cygstart --maximize --directory "${repos[$REPLY]}" $SHELL -i "$tmpScript"
+        echo -e -n '\e[1A\e[K' # move 1-line up and clean it
       }
       ;;
   esac
