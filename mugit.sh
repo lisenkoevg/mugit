@@ -20,9 +20,9 @@ count=${#repos[@]}
 function mainWrapper() {
   clear
   printf "%60sTotal repos: %s\n\n" " " $count
-  main | pr --columns=2 -w 140 -s" | " -o 2 -t -
+  main | pr --columns=3 -w 140 -s" | " -o 1 -t -
   rc=${PIPESTATUS[0]}
-  echo "Changed: $rc"
+  echo -e "\nChanged: $rc"
   return $rc
 }
 
@@ -39,8 +39,8 @@ function processRepo() {
   pushd "$repo" > /dev/null
   name=${repo/$PROJECTS_DIR\//}
   remote=$(git remote -v)
-  [ "${#remote}" == "0" ] && remote="==" || remote="R "
-  printf "(%-2s ==== %-35s %s======================= \n" "$1" "$name" "$remote"
+  [ "${#remote}" == "0" ] && remote="===" || remote="(R)"
+  printf "(%-2s ===%s %-20s \n" "$1" "$remote" "$name"
   status=$(git status -s)
   printf "%s\n\n" "$status"
   popd > /dev/null
