@@ -11,17 +11,12 @@ repos=(
   'c:\bin'
   'c:\cygwin64\home\Evgen'
   'c:\Users\Evgen\Documents\Vim'
-  'd:\Work\C\kernigan\excercises'
-  "$PROJECTS_DIR/dotu.ru"
-  "$PROJECTS_DIR/libex"
-  "$PROJECTS_DIR/pdf_bookmarks"
-  "$PROJECTS_DIR/text_analys"
-  "$PROJECTS_DIR/mugit"
-  "$PROJECTS_DIR/learn_languages"
-  "$PROJECTS_DIR/organize_files_by_date"
-  "$PROJECTS_DIR/translator"
 )
 count=${#repos[@]}
+for p in $PROJECTS_DIR/*; do
+  repos[$count]=$p
+  ((count++))
+done
 
 function mainWrapper() {
   clear
