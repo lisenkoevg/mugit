@@ -24,7 +24,7 @@ function mainWrapper() {
   main | pr --columns=3 -w 140 -s" | " -o 1 -t -
   rc=${PIPESTATUS[0]}
   echo -e "\nChanged: $rc"
-  settitle "Changed: $rc"
+  title "Changed: $rc"
   return $rc
 }
 
