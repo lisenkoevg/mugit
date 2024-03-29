@@ -14,8 +14,10 @@ repos=(
 )
 count=${#repos[@]}
 for p in $PROJECTS_DIR/*; do
-  repos[$count]=$p
-  ((count++))
+  [ -d $p/.git ] && {
+    repos[$count]=$p
+    ((count++))
+  }
 done
 
 function mainWrapper() {
