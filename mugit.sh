@@ -13,17 +13,11 @@ repos=(
   'c:\Users\Evgen\Documents\Vim'
 )
 count=${#repos[@]}
-for p in $PROJECTS_DIR/*; do
-  [ -d $p/.git ] && {
-    repos[$count]=$p
-    ((count++))
-  }
-done
 
 function mainWrapper() {
   clear
   printf "%60sTotal repos: %s\n\n" " " $count
-  main | pr --columns=3 -w 140 -s" | " -o 1 -t -
+  main | pr --columns=3 -w 180 -s" | " -o 1 -t -
   rc=${PIPESTATUS[0]}
   echo -e "\nChanged: $rc"
   title "Changed: $rc"
@@ -36,6 +30,21 @@ function main() {
     processRepo $i || (( changed++ ))
   done
   return $changed
+}
+
+function scanRepoDir() {
+  curDir=$1
+  for p in $curDir/*; do
+    if [ -d $p/.git ]; then
+      repos[$count]=$p
+      ((count++))
+    else
+      # Suppose that if .git is absent than directory contains another directories with git repo's
+      if [ -d "$p" ]; then
+        scanRepoDir $p
+      fi
+    fi
+  done
 }
 
 function processRepo() {
@@ -52,6 +61,7 @@ function processRepo() {
 }
 
 timeout=3600
+scanRepoDir $PROJECTS_DIR
 mainWrapper && timeout=3
 
 while true
